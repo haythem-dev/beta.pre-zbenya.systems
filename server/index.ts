@@ -38,6 +38,18 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Verify email connection at startup
+  try {
+    const emailConnected = await verifyEmailConnection();
+    if (emailConnected) {
+      log("Email server connection verified successfully");
+    } else {
+      log("Warning: Email server connection could not be established");
+    }
+  } catch (error) {
+    log(`Error verifying email connection: ${error}`);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
