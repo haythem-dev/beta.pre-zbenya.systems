@@ -24,7 +24,6 @@ const cvFormSchema = z.object({
 
 export default function Contact() {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('contact');
   const [file, setFile] = useState<File | null>(null);
   const [isContactSubmitting, setIsContactSubmitting] = useState(false);
   const [isCvSubmitting, setIsCvSubmitting] = useState(false);
