@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Send, X, MessageSquare, Edit, User, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 
 type Message = {
@@ -211,7 +208,7 @@ export default function Chat() {
       {/* Chat Button */}
       <div className="fixed bottom-4 right-4 z-50">
         <Button 
-          onClick={() => setIsOpen(true)} 
+          onClick={() => setIsOpen(!isOpen)} 
           size="lg" 
           className="rounded-full h-14 w-14 bg-primary shadow-lg"
         >
@@ -224,73 +221,64 @@ export default function Chat() {
         </Button>
       </div>
       
-      {/* Chat Dialog */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md p-0 gap-0 max-h-[80vh] flex flex-col">
-          <DialogHeader className="px-4 py-2 border-b">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                Live Chat
-                {!isConnected && (
-                  <Badge variant="outline" className="text-red-500 text-xs">Disconnected</Badge>
-                )}
-              </DialogTitle>
-              <div className="flex items-center gap-2">
-                {isEditingName ? (
-                  <form onSubmit={changeUserName} className="flex gap-1">
-                    <Input
-                      value={newName}
-                      onChange={(e) => setNewName(e.target.value)}
-                      autoFocus
-                      className="h-7 text-sm max-w-[150px]"
-                      maxLength={20}
-                    />
-                    <Button 
-                      type="submit" 
-                      size="sm" 
-                      className="h-7 px-2"
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-7 px-2"
-                      onClick={() => {
-                        setNewName(userName);
-                        setIsEditingName(false);
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </form>
-                ) : (
-                  <div className="flex items-center gap-1 text-sm">
-                    <User className="h-3 w-3" />
-                    <span>{userName}</span>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-6 w-6 p-0" 
-                      onClick={() => setIsEditingName(true)}
-                    >
-                      <Edit className="h-3 w-3" />
-                    </Button>
-                  </div>
-                )}
-                <DialogClose asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <X className="h-4 w-4" />
-                  </Button>
-                </DialogClose>
-              </div>
+      {/* Chat Window (simplified) */}
+      {isOpen && (
+        <div className="fixed bottom-20 right-4 z-50 w-80 sm:w-96 bg-white rounded-lg shadow-xl border overflow-hidden flex flex-col" style={{maxHeight: "70vh"}}>
+          {/* Chat Header */}
+          <div className="px-4 py-3 border-b flex items-center justify-between bg-background">
+            <div className="flex items-center gap-2 font-semibold">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              Live Chat
+              {!isConnected && (
+                <Badge variant="outline" className="text-red-500 text-xs">Disconnected</Badge>
+              )}
             </div>
-          </DialogHeader>
+            
+            <div className="flex items-center gap-2">
+              {isEditingName ? (
+                <form onSubmit={changeUserName} className="flex gap-1">
+                  <Input
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    autoFocus
+                    className="h-7 text-sm max-w-[100px]"
+                    maxLength={20}
+                  />
+                  <Button 
+                    type="submit" 
+                    size="sm" 
+                    className="h-7 px-2"
+                  >
+                    <Check className="h-4 w-4" />
+                  </Button>
+                </form>
+              ) : (
+                <div className="flex items-center gap-1 text-sm">
+                  <User className="h-3 w-3" />
+                  <span>{userName}</span>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 w-6 p-0" 
+                    onClick={() => setIsEditingName(true)}
+                  >
+                    <Edit className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
           
           {/* Chat Messages */}
-          <ScrollArea className="flex-1 p-4">
+          <div className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-4">
               {messages.map((message, index) => (
                 <div key={index} className={`flex ${
@@ -337,10 +325,10 @@ export default function Chat() {
               ))}
               <div ref={messagesEndRef} />
             </div>
-          </ScrollArea>
+          </div>
           
           {/* Message Input */}
-          <CardFooter className="p-2 border-t">
+          <div className="p-2 border-t">
             <form onSubmit={sendMessage} className="flex w-full gap-2">
               <Input
                 value={newMessage}
@@ -357,9 +345,9 @@ export default function Chat() {
                 <Send className="h-4 w-4" />
               </Button>
             </form>
-          </CardFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+        </div>
+      )}
     </>
   );
 }

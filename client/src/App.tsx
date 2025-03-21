@@ -19,7 +19,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router />
-      <Chat />
+      <div id="chat-container">
+        <Chat />
+      </div>
       <Toaster />
     </QueryClientProvider>
   );
