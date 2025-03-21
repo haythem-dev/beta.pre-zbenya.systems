@@ -1,3 +1,14 @@
+:root {
+  --color-primary: #0066CC;
+  --color-text: #1A1A1A;
+  --color-background: #FFFFFF;
+  --color-link: #0052A3;
+  --color-link-hover: #003366;
+
+  /* Contrastes WCAG AAA */
+  --color-high-contrast: #000000;
+  --color-low-contrast: #595959;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -33,11 +44,11 @@
     width: 4px;
     height: 4px;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     @apply bg-gray-300 rounded-full;
   }
@@ -76,7 +87,7 @@
     -webkit-appearance: none; /* Standardize appearance */
     appearance: none;
   }
-  
+
   /* Links should have adequate spacing for touch */
   a {
     @apply py-1; /* Minimum tap target height */
@@ -89,12 +100,12 @@
   .animate-fadeIn {
     animation: fadeIn 0.6s ease-in forwards;
   }
-  
+
   /* Slide up animation */
   .animate-slideUp {
     animation: slideUp 0.5s ease-out forwards;
   }
-  
+
   /* Slide in from right animation */
   .animate-slideInRight {
     animation: slideInRight 0.5s ease-out forwards;
@@ -104,7 +115,7 @@
   .mobile-padding {
     @apply px-4 py-4 md:px-6 md:py-6;
   }
-  
+
   /* Proper touch targets for mobile */
   .mobile-touch-target {
     @apply min-h-[44px] min-w-[44px];
@@ -138,7 +149,7 @@
   .section {
     @apply py-6;
   }
-  
+
   h1, h2, h3 {
     @apply tracking-tighter;
   }
