@@ -3,16 +3,40 @@ import { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import { Button } from './ui/button';
 
+const FAQ_RESPONSES = {
+  "prix": "Nos tarifs varient selon vos besoins. Demandez un devis gratuit !",
+  "délai": "Le délai moyen est de 2-4 semaines selon la complexité du projet.",
+  "services": "Nous offrons: développement web, mobile et solutions sur mesure.",
+  "contact": "Appelez-nous au +1234567890 ou écrivez à contact@zbenyasystems.com"
+};
+
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{type: 'user' | 'bot', text: string}[]>([]);
+  const [messages, setMessages] = useState<{type: 'user' | 'bot', text: string}[]>([{
+    type: 'bot',
+    text: 'Bonjour ! Comment puis-je vous aider ?'
+  }]);
   const [input, setInput] = useState('');
 
   const handleSend = async () => {
     if (!input.trim()) return;
     
+    const userMessage = input.toLowerCase();
     setMessages(prev => [...prev, { type: 'user', text: input }]);
-    // Ici nous ajouterons l'intégration avec l'API IA
+    
+    // Recherche dans la FAQ
+    const faqResponse = Object.entries(FAQ_RESPONSES).find(
+      ([key]) => userMessage.includes(key)
+    );
+    
+    const botResponse = faqResponse 
+      ? faqResponse[1]
+      : "Je vous mets en relation avec un conseiller...";
+      
+    setTimeout(() => {
+      setMessages(prev => [...prev, { type: 'bot', text: botResponse }]);
+    }, 500);
+    
     setInput('');
   };
 

@@ -4,14 +4,14 @@ import { ArrowRight, ArrowDown } from "lucide-react";
 
 export default function Hero() {
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   // Optimize performance by lazy loading hero image
   useEffect(() => {
     // Mark as loaded after a small delay to ensure smooth transition
     const timer = setTimeout(() => {
       setIsLoaded(true);
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -20,7 +20,7 @@ export default function Hero() {
     e.preventDefault();
     const element = document.getElementById(id);
     const headerHeight = document.getElementById('header')?.offsetHeight || 0;
-    
+
     if (element) {
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
@@ -46,7 +46,7 @@ export default function Hero() {
             <p className="text-base md:text-lg mb-6 md:mb-8 text-gray-100 max-w-md">
               We build tailored software applications to streamline your operations and drive your business forward.
             </p>
-            
+
             {/* Stack buttons vertically on mobile, horizontally on larger screens */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md">
               <Button
@@ -74,7 +74,7 @@ export default function Hero() {
               </Button>
             </div>
           </div>
-          
+
           {/* Image container with loading optimization */}
           <div 
             className={`w-full md:w-1/2 order-1 md:order-2 transition-opacity duration-700 ${
@@ -84,21 +84,22 @@ export default function Hero() {
             <div className="relative overflow-hidden rounded-lg shadow-xl mx-auto transform md:translate-y-0 transition-transform duration-500">
               {/* Responsive image with aspect ratio preservation */}
               <img 
+                loading="lazy"
                 src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&h=400&q=80" 
                 alt="Software development illustration" 
                 className="w-full h-auto rounded-lg object-cover"
                 width="600" 
                 height="400"
-                loading="eager" // Load immediately as it's above the fold
+                
                 onLoad={() => setIsLoaded(true)}
               />
-              
+
               {/* Visual enhancement for mobile */}
               <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent pointer-events-none md:hidden"></div>
             </div>
           </div>
         </div>
-        
+
         {/* Scroll indicator - visible only on mobile */}
         <div className="flex justify-center mt-8 md:hidden animate-bounce">
           <ArrowDown className="h-6 w-6 text-white/80" />
