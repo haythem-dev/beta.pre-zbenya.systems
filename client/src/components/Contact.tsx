@@ -11,7 +11,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, MapPin, Phone, Mail, Send, FileUp } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { apiRequest } from "@/lib/queryClient";
-import { contactFormSchema, cvSubmissionFormSchema } from "@shared/schema";
+import { contactFormSchema } from "@shared/schema";
+
+// Modified CV form schema for frontend validation
+const cvFormSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  position: z.string().min(1, { message: "Position is required" }),
+  file: z.any().optional()
+});
 
 export default function Contact() {
   const { toast } = useToast();
@@ -31,8 +39,8 @@ export default function Contact() {
   });
 
   // CV form
-  const cvForm = useForm<z.infer<typeof cvSubmissionFormSchema>>({
-    resolver: zodResolver(cvSubmissionFormSchema),
+  const cvForm = useForm<z.infer<typeof cvFormSchema>>({
+    resolver: zodResolver(cvFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -45,6 +53,28 @@ export default function Contact() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      console.log('Selected file:', selectedFile.name, selectedFile.type, selectedFile.size);
+      
+      // Validate file size and type
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Error",
+          description: "File size must be less than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!validTypes.includes(selectedFile.type)) {
+        toast({
+          title: "Error",
+          description: "File must be PDF, DOC, or DOCX",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       setFile(selectedFile);
       cvForm.setValue("file", selectedFile);
     }
@@ -53,7 +83,7 @@ export default function Contact() {
   // Remove selected file
   const removeFile = () => {
     setFile(null);
-    cvForm.setValue("file", undefined);
+    cvForm.setValue("file", null);
   };
 
   // Submit contact form
@@ -80,26 +110,40 @@ export default function Contact() {
   };
 
   // Submit CV form
-  const onCvSubmit = async (data: z.infer<typeof cvSubmissionFormSchema>) => {
+  const onCvSubmit = async (data: z.infer<typeof cvFormSchema>) => {
     setIsCvSubmitting(true);
 
     try {
+      if (!file) {
+        toast({
+          title: "Error",
+          description: "Please select a file to upload",
+          variant: "destructive",
+        });
+        setIsCvSubmitting(false);
+        return;
+      }
+      
+      console.log('Submitting CV with file:', file.name, file.type, file.size);
+      
       // Create FormData for file upload
       const formData = new FormData();
       formData.append('name', data.name);
       formData.append('email', data.email);
       formData.append('position', data.position);
-      formData.append('file', data.file);
+      formData.append('file', file);
 
       // Use fetch directly for FormData
       const response = await fetch('/api/cv-submission', {
         method: 'POST',
         body: formData,
-        credentials: 'include',
       });
 
+      const result = await response.json();
+      console.log('Submission result:', result);
+
       if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`);
+        throw new Error(result.message || `${response.status}: ${response.statusText}`);
       }
 
       cvForm.reset();
@@ -110,10 +154,10 @@ export default function Contact() {
         variant: "default",
       });
     } catch (error) {
-      console.error(error);
+      console.error('CV submission error:', error);
       toast({
         title: "Error",
-        description: "There was an error submitting your CV. Please try again later.",
+        description: error instanceof Error ? error.message : "There was an error submitting your CV. Please try again later.",
         variant: "destructive",
       });
     } finally {

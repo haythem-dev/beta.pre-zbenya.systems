@@ -78,6 +78,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ success: false, message: 'No file uploaded' });
       }
       
+      console.log('File uploaded successfully:', req.file);
+      
       // Get form data
       const formData = {
         name: req.body.name,
@@ -86,6 +88,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fileName: req.file.originalname,
         filePath: req.file.path
       };
+      
+      console.log('Form data:', formData);
       
       // Save CV submission to storage
       const cvSubmission = await storage.createCvSubmission(formData);
@@ -99,7 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(400).json({ success: false, message: 'Invalid form data', errors: error.errors });
       } else {
         console.error('CV submission error:', error);
-        res.status(500).json({ success: false, message: 'Failed to submit CV' });
+        res.status(500).json({ success: false, message: 'Failed to submit CV', error: error instanceof Error ? error.message : String(error) });
       }
     }
   });
