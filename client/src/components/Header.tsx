@@ -5,6 +5,22 @@ import { Button } from "@/components/ui/button";
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const preloadImages = async () => {
+      const images = document.querySelectorAll('img');
+      await Promise.all([...images].map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }));
+      setIsLoading(false);
+    };
+    preloadImages();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
