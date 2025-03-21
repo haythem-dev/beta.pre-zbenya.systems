@@ -49,7 +49,13 @@ export default function Hero() {
 
             {/* Stack buttons vertically on mobile, horizontally on larger screens */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md">
-              <Button
+              <Button 
+                size="lg"
+                className="bg-secondary hover:bg-secondary/90 text-white font-semibold px-8 py-4 text-lg shadow-lg hover:scale-105 transition-transform"
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Demander un devis
+              </Button>
                 asChild
                 size="lg"
                 className="bg-secondary hover:bg-orange-700 text-white font-bold w-full flex items-center justify-center gap-2 transition-all duration-300 transform hover:translate-y-[-2px]"
@@ -84,13 +90,16 @@ export default function Hero() {
             <div className="relative overflow-hidden rounded-lg shadow-xl mx-auto transform md:translate-y-0 transition-transform duration-500">
               {/* Responsive image with aspect ratio preservation */}
               <img 
-                loading="lazy"
+                loading="eager"
+                fetchpriority="high"
                 src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&h=400&q=80" 
                 alt="Software development illustration" 
                 className="w-full h-auto rounded-lg object-cover"
                 width="600" 
                 height="400"
-                
+                srcSet="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80 400w,
+                        https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80 600w"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 onLoad={() => setIsLoaded(true)}
               />
 

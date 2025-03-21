@@ -4,10 +4,14 @@ import { MessageSquare, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 const FAQ_RESPONSES = {
-  "prix": "Nos tarifs varient selon vos besoins. Demandez un devis gratuit !",
-  "délai": "Le délai moyen est de 2-4 semaines selon la complexité du projet.",
-  "services": "Nous offrons: développement web, mobile et solutions sur mesure.",
-  "contact": "Appelez-nous au +1234567890 ou écrivez à contact@zbenyasystems.com"
+  "prix": "Nos tarifs varient selon vos besoins. Demandez un devis gratuit et personnalisé !",
+  "délai": "Le délai moyen est de 2-4 semaines selon la complexité. Nous respectons toujours les échéances convenues.",
+  "services": "Nous offrons:\n- Développement web sur mesure\n- Applications mobiles iOS/Android\n- Solutions d'entreprise\n- Intégration API & Cloud",
+  "contact": "Appelez-nous au +1234567890 ou écrivez à contact@zbenyasystems.com",
+  "support": "Notre support est disponible 24/7. Nous répondons sous 24h maximum.",
+  "technologie": "Nous utilisons les dernières technologies: React, Node.js, Cloud Native",
+  "méthodologie": "Nous suivons une approche agile avec des points réguliers",
+  "garantie": "Nous offrons 3 mois de garantie et support après livraison"
 };
 
 export default function ChatBot() {
