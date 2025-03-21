@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Chat from "@/components/Chat";
+import { Analytics } from "@vercel/analytics/react";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <Analytics />
       <Router />
       <div id="chat-container">
         <Chat />
