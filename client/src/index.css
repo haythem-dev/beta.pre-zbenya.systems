@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles prioritizing mobile first approach */
 @layer base {
   * {
     @apply border-border;
@@ -9,5 +10,136 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Prevent content shift on page load */
+    overflow-x: hidden;
+    /* Fast loading with critical content prioritization */
+    content-visibility: auto;
+  }
+
+  /* Focus styles for a11y */
+  :focus {
+    @apply outline-2 outline-offset-2 outline-primary/50;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+}
+
+/* Mobile first components */
+@layer components {
+  .container {
+    @apply px-4 md:px-6 lg:px-8 w-full max-w-[1200px];
+  }
+
+  .section {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+
+  /* Improve loading times by optimizing image rendering */
+  img {
+    @apply max-w-full transition-opacity duration-300;
+    content-visibility: auto;
+  }
+
+  /* Ensure buttons are easy to tap on mobile */
+  button, 
+  .button, 
+  [type="button"], 
+  [type="submit"] {
+    @apply min-h-[44px] min-w-[44px]; /* Minimum tap target size */
+    touch-action: manipulation; /* Better touch behavior */
+  }
+
+  /* Improve form elements for mobile */
+  input, 
+  textarea, 
+  select {
+    @apply text-base; /* Prevent zoom on mobile */
+    -webkit-appearance: none; /* Standardize appearance */
+    appearance: none;
+  }
+  
+  /* Links should have adequate spacing for touch */
+  a {
+    @apply py-1; /* Minimum tap target height */
+  }
+}
+
+/* Custom animations for better UX */
+@layer utilities {
+  /* Fade in animation */
+  .animate-fadeIn {
+    animation: fadeIn 0.6s ease-in forwards;
+  }
+  
+  /* Slide up animation */
+  .animate-slideUp {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+  
+  /* Slide in from right animation */
+  .animate-slideInRight {
+    animation: slideInRight 0.5s ease-out forwards;
+  }
+
+  /* Smaller padding on mobile */
+  .mobile-padding {
+    @apply px-4 py-4 md:px-6 md:py-6;
+  }
+  
+  /* Proper touch targets for mobile */
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
+/* Define animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Loading state optimizations */
+.loading * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Optimize for mobile viewports */
+@media (max-width: 640px) {
+  .section {
+    @apply py-6;
+  }
+  
+  h1, h2, h3 {
+    @apply tracking-tighter;
   }
 }
