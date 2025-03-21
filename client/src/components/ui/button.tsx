@@ -36,7 +36,9 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
+  /** Description pour améliorer l'accessibilité lorsque l'intitulé n'est pas explicite */
+  'aria-label'?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
