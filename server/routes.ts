@@ -5,6 +5,7 @@ import { z } from "zod";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { WebSocketServer, WebSocket } from 'ws';
 import { insertContactMessageSchema, contactFormSchema, cvSubmissionFormSchema } from "@shared/schema";
 import { sendContactEmail, sendCvSubmissionEmail } from "./email";
 
@@ -104,6 +105,148 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  // Initialize WebSocket server for chat
+  // Use a more specific path to avoid conflicts with Vite's WebSocket
+  const wss = new WebSocketServer({ 
+    server: httpServer,
+    path: '/api/chat-socket'
+  });
+
+  // Define chat message interface
+  interface ChatMessage {
+    type: 'chat' | 'system' | 'welcome';
+    content: string;
+    userName?: string;
+    clientId?: string;
+    timestamp: string;
+    history?: ChatMessage[];
+  }
+  
+  // Define client interface
+  interface ChatClient {
+    ws: WebSocket;
+    userName: string;
+  }
+  
+  // Track connected clients
+  const clients = new Map<string, ChatClient>();
+  
+  // Simple chat messages storage (in-memory)
+  const chatMessages: ChatMessage[] = [];
+  const MAX_STORED_MESSAGES = 50;
+
+  wss.on('connection', (ws) => {
+    const clientId = Date.now().toString();
+    let userName = 'Guest-' + clientId.slice(-4);
+    
+    // Store client connection
+    clients.set(clientId, { ws, userName });
+    
+    console.log(`New chat client connected: ${userName}`);
+    
+    // Send welcome message and chat history to new client
+    ws.send(JSON.stringify({
+      type: 'welcome',
+      clientId: clientId,
+      userName: userName,
+      history: chatMessages.slice(-20) // Send last 20 messages
+    }));
+    
+    // Broadcast new user joined to all clients
+    broadcastMessage({
+      type: 'system' as const,
+      content: `${userName} joined the chat`,
+      timestamp: new Date().toISOString()
+    }, clientId);
+    
+    // Handle incoming messages
+    ws.on('message', (messageData) => {
+      try {
+        const message = JSON.parse(messageData.toString()) as {
+          type: string;
+          content?: string;
+          userName?: string;
+        };
+        
+        // Handle different message types
+        switch (message.type) {
+          case 'chat':
+            if (typeof message.content === 'string') {
+              // Add timestamp and user info
+              const chatMessage: ChatMessage = {
+                type: 'chat' as const,
+                content: message.content,
+                userName: userName,
+                clientId: clientId,
+                timestamp: new Date().toISOString()
+              };
+              
+              // Store message
+              chatMessages.push(chatMessage);
+              if (chatMessages.length > MAX_STORED_MESSAGES) {
+                chatMessages.shift(); // Remove oldest message
+              }
+              
+              // Broadcast to all clients
+              broadcastMessage(chatMessage);
+            }
+            break;
+            
+          case 'setName':
+            if (message.userName && message.userName.trim()) {
+              const oldName = userName;
+              userName = message.userName.trim().substring(0, 20); // Limit name length
+              
+              const client = clients.get(clientId);
+              if (client) {
+                client.userName = userName;
+                
+                // Announce name change
+                broadcastMessage({
+                  type: 'system' as const,
+                  content: `${oldName} changed their name to ${userName}`,
+                  timestamp: new Date().toISOString()
+                });
+              }
+            }
+            break;
+        }
+      } catch (error) {
+        console.error('Error processing chat message:', error);
+      }
+    });
+    
+    // Handle disconnection
+    ws.on('close', () => {
+      const client = clients.get(clientId);
+      if (client) {
+        console.log(`Chat client disconnected: ${client.userName}`);
+        
+        // Broadcast user left message
+        broadcastMessage({
+          type: 'system' as const,
+          content: `${client.userName} left the chat`,
+          timestamp: new Date().toISOString()
+        });
+        
+        // Remove client
+        clients.delete(clientId);
+      }
+    });
+  });
+  
+  // Function to broadcast messages to all clients
+  function broadcastMessage(message: ChatMessage, excludeClientId: string | null = null) {
+    clients.forEach((client, clientId) => {
+      // Don't send to excluded client (if specified)
+      if (excludeClientId && clientId === excludeClientId) return;
+      
+      if (client.ws.readyState === WebSocket.OPEN) { // Check if connection is open
+        client.ws.send(JSON.stringify(message));
+      }
+    });
+  }
 
   return httpServer;
 }
