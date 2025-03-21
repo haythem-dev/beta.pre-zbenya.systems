@@ -17,12 +17,16 @@ function Router() {
 }
 
 function App() {
+  const { preferences } = useUserPreferences();
+  
   return (
     <QueryClientProvider client={queryClient}>
       <Analytics />
-      <Router />
-      <div id="chat-container">
-        <Chat />
+      <div className={preferences.theme === 'dark' ? 'dark' : ''}>
+        <Router />
+        <Search />
+        <div id="chat-container">
+          <Chat />
       </div>
       <Toaster />
     </QueryClientProvider>
