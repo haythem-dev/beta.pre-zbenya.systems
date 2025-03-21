@@ -6,10 +6,10 @@ import fs from 'fs';
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.EMAIL_PORT || '587'),
-  secure: process.env.EMAIL_SECURE === 'true',
+  secure: process.env.EMAIL_SECURE === 'true' || false,
   auth: {
-    user: process.env.EMAIL_USER || 'your-email@example.com',
-    pass: process.env.EMAIL_PASSWORD || 'your-password'
+    user: process.env.EMAIL_USER || 'contact.beta.zbenyasystems@gmail.com',
+    pass: process.env.EMAIL_PASSWORD
   }
 });
 
@@ -18,8 +18,8 @@ export async function sendContactEmail(message: ContactMessage): Promise<void> {
   try {
     // Email to company about new contact form submission
     await transporter.sendMail({
-      from: `"ZbenyaSystems Website" <${process.env.EMAIL_USER || 'your-email@example.com'}>`,
-      to: process.env.CONTACT_EMAIL || 'contact@zbenyasystems.com',
+      from: `"ZbenyaSystems Website" <${process.env.EMAIL_USER || 'contact.beta.zbenyasystems@gmail.com'}>`,
+      to: process.env.CONTACT_EMAIL || 'contact.beta.zbenyasystems@gmail.com',
       subject: `New Contact Form Submission: ${message.subject}`,
       html: `
         <h2>New Contact Form Submission</h2>
@@ -34,7 +34,7 @@ export async function sendContactEmail(message: ContactMessage): Promise<void> {
 
     // Confirmation email to user
     await transporter.sendMail({
-      from: `"ZbenyaSystems" <${process.env.EMAIL_USER || 'your-email@example.com'}>`,
+      from: `"ZbenyaSystems" <${process.env.EMAIL_USER || 'contact.beta.zbenyasystems@gmail.com'}>`,
       to: message.email,
       subject: 'Thank you for contacting ZbenyaSystems',
       html: `
@@ -60,8 +60,8 @@ export async function sendCvSubmissionEmail(submission: CvSubmission, filePath: 
   try {
     // Email to company about new CV submission
     await transporter.sendMail({
-      from: `"ZbenyaSystems Website" <${process.env.EMAIL_USER || 'your-email@example.com'}>`,
-      to: process.env.HR_EMAIL || 'hr@zbenyasystems.com',
+      from: `"ZbenyaSystems Website" <${process.env.EMAIL_USER || 'contact.beta.zbenyasystems@gmail.com'}>`,
+      to: process.env.HR_EMAIL || 'contact.beta.zbenyasystems@gmail.com',
       subject: `New CV Submission for ${submission.position} Position`,
       html: `
         <h2>New CV Submission</h2>
@@ -81,7 +81,7 @@ export async function sendCvSubmissionEmail(submission: CvSubmission, filePath: 
 
     // Confirmation email to applicant
     await transporter.sendMail({
-      from: `"ZbenyaSystems HR" <${process.env.EMAIL_USER || 'your-email@example.com'}>`,
+      from: `"ZbenyaSystems HR" <${process.env.EMAIL_USER || 'contact.beta.zbenyasystems@gmail.com'}>`,
       to: submission.email,
       subject: 'Thank you for your application to ZbenyaSystems',
       html: `
