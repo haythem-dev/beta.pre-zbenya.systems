@@ -131,13 +131,13 @@ export default function Contact() {
             Get in touch with our team for inquiries, project consultations, or to submit your CV for freelance opportunities.
           </p>
         </div>
-        
+
         <div className="flex flex-col lg:flex-row gap-10">
           <div className="lg:w-1/2">
             {/* Contact Form */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="font-semibold text-xl mb-4">Send us a message</h3>
-              
+
               <Form {...contactForm}>
                 <form onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -168,7 +168,7 @@ export default function Contact() {
                       )}
                     />
                   </div>
-                  
+
                   <FormField
                     control={contactForm.control}
                     name="subject"
@@ -182,7 +182,7 @@ export default function Contact() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={contactForm.control}
                     name="message"
@@ -200,7 +200,7 @@ export default function Contact() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <div className="flex justify-end">
                     <Button 
                       type="submit"
@@ -215,12 +215,12 @@ export default function Contact() {
               </Form>
             </div>
           </div>
-          
+
           <div className="lg:w-1/2">
             {/* CV Upload */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-8">
               <h3 className="font-semibold text-xl mb-4">Submit Your CV</h3>
-              
+
               <Form {...cvForm}>
                 <form onSubmit={cvForm.handleSubmit(onCvSubmit)} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -251,7 +251,7 @@ export default function Contact() {
                       )}
                     />
                   </div>
-                  
+
                   <FormField
                     control={cvForm.control}
                     name="position"
@@ -277,7 +277,7 @@ export default function Contact() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={cvForm.control}
                     name="file"
@@ -306,7 +306,7 @@ export default function Contact() {
                                 {...rest}
                               />
                             </label>
-                            
+
                             {file && (
                               <div className="mt-2 text-sm text-gray-600 flex items-center justify-between p-2 bg-gray-50 rounded">
                                 <span className="font-medium truncate">{file.name}</span>
@@ -327,7 +327,7 @@ export default function Contact() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <div className="flex justify-end">
                     <Button 
                       type="submit"
@@ -341,7 +341,7 @@ export default function Contact() {
                 </form>
               </Form>
             </div>
-            
+
             {/* Contact Information */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="font-semibold text-xl mb-4">Contact Information</h3>
@@ -355,7 +355,7 @@ export default function Contact() {
                     <p className="text-gray-600">123 Technology Park, Tunis, Tunisia</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <Mail className="h-5 w-5" />
@@ -365,7 +365,7 @@ export default function Contact() {
                     <a href="mailto:contact@zbenyasystems.com" className="text-gray-600 hover:text-primary">contact@zbenyasystems.com</a>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <Phone className="h-5 w-5" />
