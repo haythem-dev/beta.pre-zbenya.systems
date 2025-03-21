@@ -28,9 +28,6 @@ export default function Contact() {
   const [file, setFile] = useState<File | null>(null);
   const [isContactSubmitting, setIsContactSubmitting] = useState(false);
   const [isCvSubmitting, setIsCvSubmitting] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [isContactSubmitting, setIsContactSubmitting] = useState(false);
-  const [isCvSubmitting, setIsCvSubmitting] = useState(false);
   // Contrôle des onglets pour la version mobile
   const [activeTab, setActiveTab] = useState<'contact' | 'cv'>('contact');
 
