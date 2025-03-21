@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { cvSubmissionFormSchema } from "@shared/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +24,10 @@ const cvFormSchema = z.object({
 
 export default function Contact() {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('contact');
+  const [file, setFile] = useState<File | null>(null);
+  const [isContactSubmitting, setIsContactSubmitting] = useState(false);
+  const [isCvSubmitting, setIsCvSubmitting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isContactSubmitting, setIsContactSubmitting] = useState(false);
   const [isCvSubmitting, setIsCvSubmitting] = useState(false);

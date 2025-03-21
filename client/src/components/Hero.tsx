@@ -40,17 +40,13 @@ export default function Hero() {
             </p>
           </div>
           <div className="space-x-4">
-            <Button asChild>
-              <a href="#contact" onClick={scrollToSection('contact')}>
-                Get Started
-                <ArrowRight className="h-4 w-4 ml-1 inline-block" />
-              </a>
+            <Button onClick={() => window.location.href = '/contact'}>
+              Get Started
+              <ArrowRight className="h-4 w-4 ml-1 inline-block" />
             </Button>
-            <Button asChild variant="outline">
-              <a href="#services" onClick={scrollToSection('services')}>
-                Learn More
-                <ArrowDown className="h-4 w-4 ml-1 inline-block" />
-              </a>
+            <Button variant="outline" onClick={() => window.location.href = '/services'}>
+              Learn More
+              <ArrowDown className="h-4 w-4 ml-1 inline-block" />
             </Button>
           </div>
         </div>
