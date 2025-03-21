@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import { Button } from './ui/button';
@@ -16,31 +15,44 @@ const FAQ_RESPONSES = {
 
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{type: 'user' | 'bot', text: string}[]>([{
+  const [messages, setMessages] = useState([{
     type: 'bot',
     text: 'Bonjour ! Comment puis-je vous aider ?'
   }]);
   const [input, setInput] = useState('');
+  const [history, setHistory] = useState<Array<{ role: string; content: string }>>([]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
-    
-    const userMessage = input.toLowerCase();
-    setMessages(prev => [...prev, { type: 'user', text: input }]);
-    
-    // Recherche dans la FAQ
-    const faqResponse = Object.entries(FAQ_RESPONSES).find(
-      ([key]) => userMessage.includes(key)
-    );
-    
-    const botResponse = faqResponse 
-      ? faqResponse[1]
-      : "Je vous mets en relation avec un conseiller...";
-      
-    setTimeout(() => {
-      setMessages(prev => [...prev, { type: 'bot', text: botResponse }]);
-    }, 500);
-    
+
+    const userMessage = { type: 'user', text: input };
+    setMessages([...messages, userMessage]);
+
+    // Update conversation history
+    const newHistory = [...history, { role: 'user', content: input }];
+    setHistory(newHistory);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: input,
+          history: newHistory
+        })
+      });
+
+      const data = await response.json();
+      setMessages(prev => [...prev, { type: 'assistant', text: data.response }]);
+      setHistory(prev => [...prev, { role: 'assistant', content: data.response }]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      setMessages(prev => [...prev, { 
+        type: 'assistant', 
+        text: "Désolé, je n'ai pas pu traiter votre demande." 
+      }]);
+    }
+
     setInput('');
   };
 
